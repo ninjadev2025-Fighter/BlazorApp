@@ -1,5 +1,5 @@
 using NinjaDev.Components;
-using Microsoft.AspNetCore.Components.WebAssembly.Server;
+//using Microsoft.AspNetCore.Components.WebAssembly.Server;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,7 +24,7 @@ app.UseAntiforgery();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode()
-    .AddInteractiveWebAssemblyRenderMode();
+    .AddInteractiveServerRenderMode();
+    //.AddInteractiveWebAssemblyRenderMode();
 
 app.Run();
