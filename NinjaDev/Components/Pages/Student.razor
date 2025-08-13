@@ -1,7 +1,26 @@
 ﻿@page "/student"
 
-<h3>Student Component here</h3>
+
+@* 
+<h3 style="font-size:@sizePx">النص ده بيتغير حجمه</h3>
+
+<input type="range" min="10" max="50" @bind="size" />
+<p>الحجم الحالي: @size px</p>
 
 @code {
+    int size = 20;
+    string sizePx => $"{size}px";
+} *@
 
+@rendermode	InteractiveWebAssembly  
+
+<h3 style="font-size:@($"{size}px")">النص ده بيتغير حجمه</h3>
+
+<input type="range" min="10" max="50" step="1"
+       @bind="size" @bind:event="oninput" />
+
+<p>الحجم الحالي: @size px</p>
+
+@code {
+    private int size = 20;
 }

@@ -1,4 +1,6 @@
 ﻿@page "/weather"
+
+
 @attribute [StreamRendering]
 
 <PageTitle>Weather</PageTitle>
@@ -36,6 +38,7 @@ else
     </table>
 }
 
+ 
 @code {
     private WeatherForecast[]? forecasts;
 
@@ -62,3 +65,4 @@ else
         public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
     }
 }
+
