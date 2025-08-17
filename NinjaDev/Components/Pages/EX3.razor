@@ -1,0 +1,40 @@
+﻿@page "/ex3"
+@rendermode InteractiveServer
+@inject IJSRuntime JS
+
+<div class="container mt-5 mb-5 text-center">
+    <div class="card shadow-sm p-4">
+        <p> مرحبا بك يا :
+
+            <input @onkeydown="AddStudent" type="text" class="form-control" @bind="Message" @bind:event="oninput" placeholder="أدخل اسمك هنا" />
+            <b class="text-primary">
+                @Message
+            </b>
+        </p>
+
+      
+        @for (int i = 0; i < Students.Count; i++)
+        {
+            var currentIndex = i;
+            <p>
+                الطالب : @Students[currentIndex]
+                <button class="btn btn-danger" @onclick="() => RemoveStudent(currentIndex)">
+                    حذف
+                </button>
+            </p>
+        }
+
+       عدد الطلاب:  @Students.Count
+
+
+        @if (!string.IsNullOrEmpty(Message))
+        {
+            <a class="btn btn-success"  href="/home/@Message">ارسال البيانات</a>
+        }
+
+
+
+        @* <button class="btn btn-success" @onclick="AddStudent">إضافة طالب</button> *@
+    </div>
+</div>
+

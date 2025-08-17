@@ -1,0 +1,15 @@
+﻿@rendermode InteractiveServer
+
+<div class="container mt-5 text-center">
+
+
+    <h5 class="card-title">تحكم في حجم النص</h5>
+    <h3 style="font-size:@($"{size}px")">النص ده بيتغير حجمه</h3>
+    <label for="sizeRange" >اختر الحجم: @size </label>
+
+    <input type="range" @bind="size" class="custom-range" @bind:event="oninput" min="10" max="50" step="1" />
+</div>
+
+@code{
+    private int size = 10;
+}

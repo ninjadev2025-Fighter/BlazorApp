@@ -1,13 +1,76 @@
 ﻿@page "/student"
-@rendermode InteractiveServer  
+@rendermode InteractiveServer
 
-<h3 style="font-size:@($"{size}px")">النص ده بيتغير حجمه</h3>
+@*
+<div class="container mt-5 text-right" dir="rtl">
+    <div class="card shadow-sm p-4">
+        <h3 class="card-title mb-3">مثال One-Way Binding في Blazor</h3>
 
-<input type="range" min="10" max="50" step="1"
-       @bind="size" @bind:event="oninput" />
+        <p class="card-text">
+            الرسالة الحالية: <strong class="text-primary">@Message</strong>
+        </p>
 
-<p>الحجم الحالي: @size px</p>
+        <button class="btn btn-success" @onclick="ChangeMessage">
+            غيّر الرسالة
+        </button>
+    </div>
+</div>
+
+@code {
+    private string name = "أحمد";
+    private string Message ="";
+
+
+
+
+    protected override void OnInitialized()
+    {
+        Message = $"مرحبا بك! {name}";
+    }
+
+
+
+    private void ChangeMessage()
+    {
+        Message = "تم تغيير الرسالة بنجاح!";
+    }
+}
+
+*@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container mt-5 text-center">
+
+    <div class="card mb-4 shadow-sm ">
+        <div class="card-body">
+            <h5 class="card-title">تحكم في حجم النص</h5>
+            <h3 style="font-size:@($"{size}px")">النص ده بيتغير حجمه</h3>
+
+            <label for="sizeRange">اختر الحجم: @size px</label>
+            <input type="range" class="custom-range" min="10" max="50" step="1"
+                   id="sizeRange"
+                   @bind="size" @bind:event="oninput" />
+        </div>
+    </div>
+
+
+
+</div>
 
 @code {
     private int size = 20;
 }
+ 

@@ -1,0 +1,36 @@
+﻿@page "/exx4"
+
+<div class="text-center m-5">
+    <h3>بسم الله الرحمن الرحيم</h3>
+
+    <button @onclick="()=> Cancel()">aaaa</button>
+
+    @foreach (var color in Colors)
+    {
+
+        <div class="circle"
+             @onclick="() => Change(color)"
+             style="background-color:@color;border-radius: 50%;width: 40px;height: 40px;display: inline-block;z-index: 10000;">
+        </div>
+    }
+    <p>اللون المختار: @SelectedColor</p>
+
+
+    <h1>Ninja Dev</h1>
+    <h2>Ninja Dev</h2>
+    <h2>Ninja Dev</h2>
+</div>
+@code {
+    private List<string> Colors = new() { "red", "green", "black", "orange" };
+
+    private string SelectedColor = "";
+
+    private async Task Cancel()
+    {
+        SelectedColor = "Test";
+    }
+    private async Task Change(string color)
+    {
+        SelectedColor = color;
+    }
+}

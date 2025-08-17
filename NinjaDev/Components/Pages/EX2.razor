@@ -1,0 +1,24 @@
+﻿@page "/ex2"
+@rendermode InteractiveServer
+
+
+
+
+<div class="container mt-5 mb-5 text-center">
+    <div class="card shadow-sm p-4">
+        <h1>
+            Blazor One-Way Binding
+        </h1>
+
+        <p> الرسالة الحالية:
+
+            <b class="text-primary">
+                @((MarkupString) Message)
+
+            </b>
+        </p>
+
+        <button class="btn btn-success" @onclick="ChangeMessage">تغيير الرسالة</button>
+    </div>
+</div>
+

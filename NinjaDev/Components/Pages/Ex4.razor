@@ -1,0 +1,30 @@
+﻿@page "/ex4"
+@inject IJSRuntime JS
+@rendermode InteractiveServer
+
+<div class="text-center m-5">
+    <h3 style="color:@SelectedColor">بسم الله الرحمن الرحيم</h3>
+
+
+    @foreach (var color in Colors)
+    {
+        <div class="circle m-2" @onclick="() => Change(color)" style="background-color:@color"></div>
+    }
+
+
+    <h1>Ninja Dev</h1>
+    <h2>Ninja Dev</h2>
+    <h2>Ninja Dev</h2>
+</div>
+@code {
+    private List<string> Colors = new() { "red", "green", "black", "orange" };
+    private string SelectedColor = "Black";
+
+    private async Task Change(string color)
+    {
+        await JS.InvokeVoidAsync("changeColor", color);
+
+        SelectedColor = color;
+        Console.WriteLine(color);
+    }
+}

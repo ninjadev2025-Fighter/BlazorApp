@@ -11,7 +11,7 @@
     <meta name="description" content="" />
     <meta name="author" content="" />
     <link rel="shortcut icon" href="images/favicon.png" type="">
-    
+
 
     <link rel="stylesheet" type="text/css" href="@Assets["css/bootstrap.css"]" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
@@ -19,10 +19,18 @@
     <link href=@Assets["css/font-awesome.min.css"]" rel="stylesheet" />
     <link href="@Assets["css/style.css"]" rel="stylesheet" />
     <link href="@Assets["css/responsive.css"]" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
+
+
+    <link href= "@Assets["css/mystyle.css"]" rel="stylesheet" />
+
+     <link rel="stylesheet" href="@Assets["NinjaDev.styles.css"]" /> 
+
+
 
     <HeadOutlet />
     <ImportMap />
-    
+
     <title>NinjaDev</title>
 
 </head>
@@ -45,7 +53,27 @@
     </script>
 
 
+
+
+    <script>
+        function changeColor(xyzcolor) {
+            document.body.style.color = xyzcolor;
+        }
+    </script>
+
+
+
+
     <script src="_framework/blazor.web.js"></script>
+
+
+    <script>
+        window.changeBackgroundColor = function (color) {
+        console.log(color);
+        document.body.style.color = color ;
+
+        };
+    </script>
 </body>
 
 </html>

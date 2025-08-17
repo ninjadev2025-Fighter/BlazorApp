@@ -1,10 +1,29 @@
 ﻿@page "/"
+@page "/home/{StudentName}"
 
+
+
+
+@rendermode InteractiveServer
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
 
-Welcome to your new app.
+@* <Ex4></Ex4> *@
+
+<Ex7></Ex7>
 
 
+<div class="container mt-5 mb-5 text-center">
+    <div class="card shadow-sm p-4">
+        <h1>Welcome to NinjaDev!</h1>
+        @StudentName
 
+        <p>
+
+            The name is : @number
+  
+        </p>
+
+        <button class="btn btn-primary" @onclick="ChangeNumber">Change number</button>
+    </div>
+</div>
