@@ -1,29 +1,97 @@
 ﻿@page "/"
-@page "/home/{StudentName}"
-
-
-
+@using System.Text.Json;
+@inject IJSRuntime JS;
 
 @rendermode InteractiveServer
 <PageTitle>Home</PageTitle>
 
 
-@* <Ex4></Ex4> *@
 
-<Ex7></Ex7>
+<h1>Hello, !</h1>
 
 
-<div class="container mt-5 mb-5 text-center">
-    <div class="card shadow-sm p-4">
-        <h1>Welcome to NinjaDev!</h1>
-        @StudentName
 
-        <p>
 
-            The name is : @number
-  
-        </p>
 
-        <button class="btn btn-primary" @onclick="ChangeNumber">Change number</button>
+
+
+
+<section class="offer_section layout_padding-bottom">
+    <div class="offer_container">
+        <div class="container ">
+            <div class="row">
+
+
+                @foreach (var item in Categories)
+                {
+                    <div class="col-md-6  ">
+                        <div class="box " style="border-radius:0px">
+                            <div class="img-box" >
+                                <img src="images/o1.jpg" alt="">
+                            </div>
+                            <div class="detail-box text-right">
+                                <h3>
+                                    @item.Name
+                                </h3>
+                                <h6>
+                                    @item.Description
+                                </h6>
+                            </div>
+
+                        </div>
+                        <div class="box mt-0 text-center " style="border-radius:0px ">
+                            <button class="btn btn-danger col-4 text-center m-3" @onclick="() => RemoveCategory(item)">حذف</button>
+                            <button class="btn btn-primary col-4 text-center m-3">تعديل</button>
+                        </div>
+              
+                    </div>
+                }
+
+
+
+
+            </div>
+        </div>
     </div>
-</div>
+</section>
+
+
+
+<section class="book_section layout_padding">
+    <div class="container">
+
+        <h2 class="text-center">
+            Book A Table
+        </h2>
+
+        <div class="row">
+
+            <div class="col-sm-3">
+            </div>
+
+
+
+            <div class="col-md-6">
+                <div class="form_container">
+                    <div>
+                        <input @bind="NewCategory.Name" type="text" class="form-control text-right" placeholder="اسم الصنف" />
+                    </div>
+                    <div>
+                        <textarea @bind="NewCategory.Description" class="form-control text-right " placeholder="وصف الصنف" />
+                    </div>
+
+                    <div class="btn_box text-center">
+                        <button @onclick="AddCategory">
+                            حفظ البيانات
+                        </button>
+                    </div>
+               
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+
