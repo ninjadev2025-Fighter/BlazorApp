@@ -1,6 +1,7 @@
 ﻿using Microsoft.JSInterop;
 using NinjaDev.Data.Context;
 using NinjaDev.Domain;
+using NinjaDev.Services;
 using System.Threading.Tasks;
 
 namespace NinjaDev.Components.Pages
@@ -8,25 +9,33 @@ namespace NinjaDev.Components.Pages
     public partial class Home
     {
 
-        AppDbContext db;
+       
+        CategoryService _categoryService;
+
+
         private List<Category> Categories = new();
 
         public Category NewCategory { get; set; } = new();
 
 
 
-        public Home(AppDbContext _db)
+        public Home(CategoryService categoryService)
         {
-            db = _db;
+            _categoryService = categoryService;
 
-            Categories = GetCategoriesData();
+            Categories = _categoryService.GetAll();
         }
 
 
         void AddCategory()
         {
+            if (string.IsNullOrEmpty( NewCategory.Name))
+            {
+                JS.InvokeVoidAsync("alert", "ادخل الاسم اولا ! ");
+                return;
+            }
 
-            if (db.Categories.Where(x => x.Name == NewCategory.Name).Count() > 0)
+            if (_categoryService.IsExist(NewCategory.Name))
             {
                 JS.InvokeVoidAsync("alert", "هذا الصنف موجود مسبقا");
                 return;
@@ -38,30 +47,10 @@ namespace NinjaDev.Components.Pages
                 Description = NewCategory.Description,
             };
 
-            AddCategory(category);
 
-            db.SaveChanges();
+            _categoryService.Add(category);
 
-            Categories = GetCategoriesData();
-        }
-
-
-
-
-
-
-
-
-        // Database Operations of Category Entity
-
-        private void AddCategory(Category category)
-        {
-            db.Categories.Add(category);
-        }
-
-        private List<Category> GetCategoriesData()
-        {
-            return db.Categories.ToList();
+            Categories = _categoryService.GetAll();
         }
 
         private async Task RemoveCategory(Category model)
@@ -71,11 +60,11 @@ namespace NinjaDev.Components.Pages
 
             if (confirm == true)
             {
-                db.Categories.Remove(model);
-                db.SaveChanges();
-
-                Categories.Remove(model);
+                _categoryService.Remove(model.Id);
+                Categories = _categoryService.GetAll();
             }
         }
+   
+    
     }
 }
