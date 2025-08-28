@@ -1,32 +1,39 @@
-﻿using Microsoft.JSInterop;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using NinjaDev.Data.Context;
 using NinjaDev.Domain;
+using NinjaDev.Services;
 using System.Threading.Tasks;
 
 namespace NinjaDev.Components.Pages
 {
     public partial class Home
     {
+        [Inject] private IJSRuntime JS { get; set; } = default!;
 
-        AppDbContext db;
+        //AppDbContext db;
         private List<Category> Categories = new();
+        CategoryService CategoryService;
 
         public Category NewCategory { get; set; } = new();
 
 
 
-        public Home(AppDbContext _db)
+        public Home( CategoryService _categoryService)
         {
-            db = _db;
+            //db = _db;
+            CategoryService = _categoryService;
 
-            Categories = GetCategoriesData();
         }
-
+        override protected void OnInitialized()
+        {
+            Categories = CategoryService.GetAll();
+        }
 
         void AddCategory()
         {
 
-            if (db.Categories.Where(x => x.Name == NewCategory.Name).Count() > 0)
+            if (CategoryService.IsExist(NewCategory.Name))
             {
                 JS.InvokeVoidAsync("alert", "هذا الصنف موجود مسبقا");
                 return;
@@ -38,13 +45,12 @@ namespace NinjaDev.Components.Pages
                 Description = NewCategory.Description,
             };
 
-            AddCategory(category);
+            CategoryService.Add(category);
 
-            db.SaveChanges();
-
-            Categories = GetCategoriesData();
+            Categories = CategoryService.GetAll();
         }
 
+      
 
 
 
@@ -54,15 +60,6 @@ namespace NinjaDev.Components.Pages
 
         // Database Operations of Category Entity
 
-        private void AddCategory(Category category)
-        {
-            db.Categories.Add(category);
-        }
-
-        private List<Category> GetCategoriesData()
-        {
-            return db.Categories.ToList();
-        }
 
         private async Task RemoveCategory(Category model)
         {
@@ -71,10 +68,8 @@ namespace NinjaDev.Components.Pages
 
             if (confirm == true)
             {
-                db.Categories.Remove(model);
-                db.SaveChanges();
-
-                Categories.Remove(model);
+                CategoryService.Remove(model.Id);
+                Categories = CategoryService.GetAll();
             }
         }
     }
