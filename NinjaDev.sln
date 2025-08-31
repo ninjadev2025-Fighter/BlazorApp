@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NinjaDev.Domain", "NinjaDev
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NinjaDev.Data", "NinjaDev.Data\NinjaDev.Data.csproj", "{9360092D-AFD0-412D-B4AC-7BDF586FA3EB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NinjaDev.Services", "NinjaDev.Services\NinjaDev.Services.csproj", "{BF2A899A-BD07-4AFE-8D50-661D47FEBE43}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{9360092D-AFD0-412D-B4AC-7BDF586FA3EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9360092D-AFD0-412D-B4AC-7BDF586FA3EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9360092D-AFD0-412D-B4AC-7BDF586FA3EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF2A899A-BD07-4AFE-8D50-661D47FEBE43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF2A899A-BD07-4AFE-8D50-661D47FEBE43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF2A899A-BD07-4AFE-8D50-661D47FEBE43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF2A899A-BD07-4AFE-8D50-661D47FEBE43}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

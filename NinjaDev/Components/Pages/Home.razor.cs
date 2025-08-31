@@ -2,6 +2,7 @@
 using Microsoft.JSInterop;
 using NinjaDev.Data.Context;
 using NinjaDev.Domain;
+using NinjaDev.Domain.Interfaces;
 using NinjaDev.Services;
 using System.Threading.Tasks;
 
@@ -9,58 +10,115 @@ namespace NinjaDev.Components.Pages
 {
     public partial class Home
     {
-        [Inject] private IJSRuntime JS { get; set; } = default!;
-
-        //AppDbContext db;
+        //fields
+        #region properties
+        //initializing lists
         private List<Category> Categories = new();
-        CategoryService CategoryService;
+        private List<Product> Products = new();
 
+
+        // repository services
+        ICategoryRepository _categoryService;
+        IProductRepository _productService;
+
+
+        //initializing models
         public Category NewCategory { get; set; } = new();
+        public Category FilterCategory{ get; set; } = new();
 
 
+        // initializing states
+        private bool isEditMode { get; set; } = false;
+        #endregion
 
-        public Home( CategoryService _categoryService)
+        // constructor
+        #region constructor
+        public Home(ICategoryRepository categoryService, IProductRepository productService)
         {
-            //db = _db;
-            CategoryService = _categoryService;
-
+            _categoryService = categoryService;
+            _productService = productService;
         }
+        #endregion
+
+        // lifecycle
+        #region lifecycle
         override protected void OnInitialized()
         {
-            Categories = CategoryService.GetAll();
+            Categories = _categoryService.GetAll();
+            Products = _productService.GetAll();
         }
+        #endregion
 
-        void AddCategory()
+        // events
+        #region events
+        void SaveCategory()
         {
-
-            if (CategoryService.IsExist(NewCategory.Name))
+            if (string.IsNullOrWhiteSpace(NewCategory.Name))
             {
-                JS.InvokeVoidAsync("alert", "هذا الصنف موجود مسبقا");
+                JS.InvokeVoidAsync("alert", "الرجاء ادخال اسم الصنف");
                 return;
             }
 
-            var category = new Category
+
+            if (!isEditMode)
             {
-                Name = NewCategory.Name,
-                Description = NewCategory.Description,
-            };
+                if (_categoryService.IsExist(NewCategory.Name))
+                {
+                    JS.InvokeVoidAsync("alert", "هذا الصنف موجود مسبقا");
+                    return;
+                }
 
-            CategoryService.Add(category);
+                var category = new Category
+                {
+                    Name = NewCategory.Name,
+                    Description = NewCategory.Description,
+                };
 
-            Categories = CategoryService.GetAll();
+                _categoryService.Add(category);
+            }
+            else
+            {
+
+                Category model = _categoryService.Find(NewCategory.Id);
+
+                model.Name = NewCategory.Name;
+                model.Description = NewCategory.Description;
+           
+                try { 
+                    _categoryService.Edit(model);
+                }
+                catch (Exception ex)
+                {
+                    JS.InvokeVoidAsync("alert", ex.Message);
+                    return;
+                }
+            }
+            NewCategory = new();
+            Categories = _categoryService.GetAll();
         }
 
-      
+        // cancel edit
+        void Cancel()
+        {
+            isEditMode = false;
+            NewCategory = new Category();
+        }
 
+        // edit category
 
+        private void EditCategory(Category model)
+        {
+            isEditMode = true;
 
+            NewCategory = new Category
+            {
+                Id = model.Id,
+                Name = model.Name,
+                Description = model.Description,
+            };
+        }
 
-
-
-
-        // Database Operations of Category Entity
-
-
+        // remove category
         private async Task RemoveCategory(Category model)
         {
 
@@ -68,9 +126,16 @@ namespace NinjaDev.Components.Pages
 
             if (confirm == true)
             {
-                CategoryService.Remove(model.Id);
-                Categories = CategoryService.GetAll();
+                _categoryService.Remove(model.Id);
+                Categories = _categoryService.GetAll();
             }
         }
+
+        // filter category
+        void changeFilterCategory(Category model)
+        {
+            FilterCategory = model;
+        }
+        #endregion
     }
 }

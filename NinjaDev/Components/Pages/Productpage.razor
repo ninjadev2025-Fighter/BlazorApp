@@ -1,0 +1,51 @@
+﻿@page "/product/{CatId}/{CatName}"
+@rendermode InteractiveServer
+
+
+
+
+
+<section class="food_section layout_padding-bottom">
+    <div class="container">
+        <div class="heading_container heading_center">
+            <h2>
+                المنتجات الخاصة بقسم  @CatName
+            </h2>
+        </div>
+
+        <div class="filters-content">
+            <div class="row grid">
+
+                @foreach (var item in Products)
+                {
+                        <div class="col-sm-6 col-lg-4 all">
+                            <div class="box">
+                                <div>
+                                    <div class="img-box">
+                                        <img src="images/f1.png" alt="">
+                                    </div>
+                                    <div class="detail-box">
+                                        <h5>
+                                            @item.Name
+                                        </h5>
+                                        <p>
+                                            @item.Qty
+                                        </p>
+                                        <div class="options">
+                                            <h6>
+                                                $@item.Price
+                                            </h6>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                }
+
+
+            </div>
+        </div>
+    </div>
+</section>
+

@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using NinjaDev.Components;
 using NinjaDev.Data.Context;
+using NinjaDev.Domain;
+using NinjaDev.Domain.Interfaces;
 using NinjaDev.Services;
 using System;
 
@@ -16,7 +18,8 @@ builder.Services.AddDbContext<AppDbContext>(
         builder.Configuration.GetConnectionString("NinjaDevDB")
 ));
 
-builder.Services.AddScoped<CategoryService>();
+builder.Services.AddScoped<ICategoryRepository, CategoryService>();
+builder.Services.AddScoped<IProductRepository, ProductService>();
 
 
 
@@ -41,4 +44,14 @@ app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
-app.Run();
+
+
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
+
+
+    app.Run();

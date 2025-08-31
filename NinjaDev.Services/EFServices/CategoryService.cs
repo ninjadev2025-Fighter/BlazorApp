@@ -1,9 +1,11 @@
 ﻿using NinjaDev.Data.Context;
 using NinjaDev.Domain;
+using NinjaDev.Domain.Interfaces;
+using System;
 
 namespace NinjaDev.Services
 {
-    public class CategoryService
+    public class CategoryService : ICategoryRepository
     {
 
 
@@ -17,6 +19,7 @@ namespace NinjaDev.Services
 
         public void Add(Category category)
         {
+            category.CreatedAt = DateTime.Now;
             db.Categories.Add(category);
             db.SaveChanges();
         }
@@ -43,5 +46,24 @@ namespace NinjaDev.Services
             return db.Categories.Any(x => x.Name == CategoryName);
         }
 
+        public void Edit(Category category)
+        {
+            var oldcat = db.Categories.FirstOrDefault(x => x.Name == category.Name && x.Id != category.Id);
+            if (oldcat != null)
+                throw new InvalidOperationException("هذا الصنف موجود مسبقا");
+
+            var model = db.Categories.Find(category.Id);
+            model.Name = category.Name;
+            model.Description = category.Description;
+            model.UpdatedAt = DateTime.Now;
+
+
+            db.SaveChanges();
+        }
+
+        public Category Find(int id)
+        {
+            return db.Categories.Find(id);
+        }
     }
 }

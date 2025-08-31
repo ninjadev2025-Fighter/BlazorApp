@@ -1,6 +1,6 @@
 ﻿@page "/"
 @using System.Text.Json;
-@* @inject IJSRuntime JS; *@
+@inject IJSRuntime JS;
 
 @rendermode InteractiveServer
 <PageTitle>Home</PageTitle>
@@ -8,6 +8,8 @@
 
 
 <h1>Hello, !</h1>
+
+
 
 
 
@@ -26,24 +28,42 @@
                 {
                     <div class="col-md-6  ">
                         <div class="box " style="border-radius:0px">
-                            <div class="img-box" >
-                                <img src="images/o1.jpg" alt="">
+                            <div class="img-box">
+                                <a href="/product/@item.Id/@item.Name" style="all:unset;cursor:pointer">
+                                    <img src="images/o1.jpg" alt="">
+                                </a>
                             </div>
                             <div class="detail-box text-right">
-                                <h3>
-                                    @item.Name
-                                </h3>
+                                <a href="/product/@item.Id/@item.Name" style="all:unset;cursor:pointer">
+                                    <h2>
+                                        @item.Name
+                                    </h2>
+                                </a>
                                 <h6>
                                     @item.Description
                                 </h6>
+                                @if (item.CreatedAt != null)
+                                {
+                                    <h6>
+                                        تم الانشاء فى
+                                        @item.CreatedAt.Value.ToString("yyyy-MM-dd ")
+                                    </h6>
+                                }
+                                @if (item.UpdatedAt != null)
+                                {
+                                    <h6>
+                                        تعديل فى
+                                        @item.UpdatedAt.Value.ToString("yyyy-MM-dd ")
+                                    </h6>
+                                }
                             </div>
 
                         </div>
                         <div class="box mt-0 text-center " style="border-radius:0px ">
                             <button class="btn btn-danger col-4 text-center m-3" @onclick="() => RemoveCategory(item)">حذف</button>
-                            <button class="btn btn-primary col-4 text-center m-3">تعديل</button>
+                            <button class="btn btn-primary col-4 text-center m-3" @onclick="() => EditCategory(item)">تعديل</button>
                         </div>
-              
+
                     </div>
                 }
 
@@ -73,25 +93,113 @@
 
             <div class="col-md-6">
                 <div class="form_container">
-                    <div>
-                        <input @bind="NewCategory.Name" type="text" class="form-control text-right" placeholder="اسم الصنف" />
-                    </div>
-                    <div>
-                        <textarea @bind="NewCategory.Description" class="form-control text-right " placeholder="وصف الصنف" />
-                    </div>
 
-                    <div class="btn_box text-center">
-                        <button @onclick="AddCategory">
-                            حفظ البيانات
-                        </button>
-                    </div>
-               
+                    <EditForm  Model="NewCategory" OnValidSubmit="SaveCategory">
+
+                        <DataAnnotationsValidator />
+                        
+                        <div>
+                            <InputText @bind-Value="NewCategory.Name" type="text" class="form-control text-right" placeholder="اسم الصنف" />
+                            <ValidationMessage style="color:red" class="mb-4 text-right" For="@(() => NewCategory.Name)" />
+                        </div>
+                        <div>
+                            <InputTextArea @bind-Value="NewCategory.Description" class="form-control text-right " placeholder="وصف الصنف" />
+                            <ValidationMessage style="color:red" For="@(() => NewCategory.Description)" />
+                        </div>
+
+                        <div class="btn_box text-center">
+                            @if (isEditMode)
+                            {
+                                <button @onclick="Cancel" class="mr-3">
+                                    الغاء
+                                </button>
+                            }
+                            <button type="submit">
+                                حفظ البيانات
+                            </button>
+                        </div>
+                    </EditForm>
+
                 </div>
             </div>
 
         </div>
     </div>
 </section>
+
+
+
+
+
+
+
+
+
+<section class="food_section layout_padding-bottom">
+    <div class="container">
+        <div class="heading_container heading_center">
+            <h2>
+                Our Menu
+            </h2>
+        </div>
+
+        <ul class="filters_menu">
+            <li @onclick="() => FilterCategory = new()">الكل</li>
+
+            @foreach (var item in Categories)
+            {
+                <li @onclick="() => changeFilterCategory(item)">@item.Name</li>
+            }
+        </ul>
+
+        <div class="filters-content">
+            <div class="row grid">
+
+                @foreach (var item in Products)
+                {
+                    @if (FilterCategory.Id == item.CategoryId || FilterCategory.Id == 0)
+                    {
+                        <div class="col-sm-6 col-lg-4 all">
+                            <div class="box">
+                                <div>
+                                    <div class="img-box">
+                                        <img src="images/f1.png" alt="">
+                                    </div>
+                                    <div class="detail-box">
+                                        <h5>
+                                            @item.Name
+                                        </h5>
+                                        <p>
+                                            @item.Qty
+                                        </p>
+                                        <div class="options">
+                                            <h6>
+                                                $@item.Price
+                                            </h6>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+
+
+
+
 
 
 
