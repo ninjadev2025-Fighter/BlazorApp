@@ -10,11 +10,16 @@ namespace NinjaDev.Domain
         [Required(ErrorMessage ="يجب ادخال الاسم !")]
         public string? Name { get; set; }
 
-        [Required(ErrorMessage ="يجب ادخال الاسم !")]
+        [Required(ErrorMessage ="يجب ادخال الوصف !")]
         public string? Description { get; set; }
+
+        public string? ImageUrl { get; set; }
 
 
         public List<Product> Products { get; set; } = new ();
+
+
+
 
     }
 }

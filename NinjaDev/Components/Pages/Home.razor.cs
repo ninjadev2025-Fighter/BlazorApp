@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
 using NinjaDev.Data.Context;
 using NinjaDev.Domain;
 using NinjaDev.Domain.Interfaces;
 using NinjaDev.Services;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace NinjaDev.Components.Pages
@@ -24,11 +26,18 @@ namespace NinjaDev.Components.Pages
 
         //initializing models
         public Category NewCategory { get; set; } = new();
-        public Category FilterCategory{ get; set; } = new();
+        public Category FilterCategory { get; set; } = new();
 
 
         // initializing states
         private bool isEditMode { get; set; } = false;
+
+        //image upload
+        private string ImagePreview;
+        private IBrowserFile UploadedFile;
+
+
+
         #endregion
 
         // constructor
@@ -51,11 +60,36 @@ namespace NinjaDev.Components.Pages
 
         // events
         #region events
-        void SaveCategory()
+
+
+
+        //choose photo
+        private async Task HandleFileSelected(InputFileChangeEventArgs e)
+        {
+            UploadedFile = e.File;
+
+            // قراءة الصورة للعرض الفوري
+            using var ms = new MemoryStream();
+            await UploadedFile.OpenReadStream(10 * 1024 * 1024).CopyToAsync(ms);
+            
+            ImagePreview = $"data:{UploadedFile.ContentType};base64,{Convert.ToBase64String(ms.ToArray())}";
+
+        }
+
+
+
+
+
+
+
+
+
+
+        private async Task SaveCategory()
         {
             if (string.IsNullOrWhiteSpace(NewCategory.Name))
             {
-                JS.InvokeVoidAsync("alert", "الرجاء ادخال اسم الصنف");
+                await JS.InvokeVoidAsync("alert", "الرجاء ادخال اسم الصنف");
                 return;
             }
 
@@ -64,7 +98,7 @@ namespace NinjaDev.Components.Pages
             {
                 if (_categoryService.IsExist(NewCategory.Name))
                 {
-                    JS.InvokeVoidAsync("alert", "هذا الصنف موجود مسبقا");
+                    await JS.InvokeVoidAsync("alert", "هذا الصنف موجود مسبقا");
                     return;
                 }
 
@@ -73,6 +107,34 @@ namespace NinjaDev.Components.Pages
                     Name = NewCategory.Name,
                     Description = NewCategory.Description,
                 };
+
+
+
+
+
+
+
+
+                // حفظ الصورة إذا تم رفعها
+                if (UploadedFile != null)
+                {
+                    var folderPath = Path.Combine("wwwroot", "uploads", "categories");
+                    if (!Directory.Exists(folderPath))
+                        Directory.CreateDirectory(folderPath);
+
+                    var fileName = $"{Guid.NewGuid()}{Path.GetExtension(UploadedFile.Name)}";
+                    var filePath = Path.Combine(folderPath, fileName);
+                   
+                    using var stream = new FileStream(filePath, FileMode.Create);
+                    await UploadedFile.OpenReadStream(10 * 1024 * 1024).CopyToAsync(stream);
+                   
+                    category.ImageUrl = $"/uploads/categories/{fileName}";
+                }
+
+
+
+
+
 
                 _categoryService.Add(category);
             }
@@ -83,17 +145,39 @@ namespace NinjaDev.Components.Pages
 
                 model.Name = NewCategory.Name;
                 model.Description = NewCategory.Description;
-           
-                try { 
+
+
+
+
+                // تحديث الصورة إذا تم رفع صورة جديدة
+                if (UploadedFile != null)
+                {
+                    var folderPath = Path.Combine("wwwroot", "uploads", "categories");
+                    if (!Directory.Exists(folderPath))
+                        Directory.CreateDirectory(folderPath);
+
+                    var fileName = $"{Guid.NewGuid()}{Path.GetExtension(UploadedFile.Name)}";
+                    var filePath = Path.Combine(folderPath, fileName);
+                    using var stream = new FileStream(filePath, FileMode.Create);
+                    await UploadedFile.OpenReadStream(10 * 1024 * 1024).CopyToAsync(stream);
+                    model.ImageUrl = $"/uploads/categories/{fileName}";
+                }
+
+
+
+                try
+                {
                     _categoryService.Edit(model);
                 }
                 catch (Exception ex)
                 {
-                    JS.InvokeVoidAsync("alert", ex.Message);
+                    await JS.InvokeVoidAsync("alert", ex.Message);
                     return;
                 }
             }
             NewCategory = new();
+            UploadedFile = null;
+            ImagePreview = null;
             Categories = _categoryService.GetAll();
         }
 
@@ -116,6 +200,9 @@ namespace NinjaDev.Components.Pages
                 Name = model.Name,
                 Description = model.Description,
             };
+
+            ImagePreview = !string.IsNullOrEmpty(model.ImageUrl) ? model.ImageUrl : null;
+
         }
 
         // remove category
@@ -136,6 +223,13 @@ namespace NinjaDev.Components.Pages
         {
             FilterCategory = model;
         }
+
+
+
+
+
+
+
         #endregion
     }
 }
